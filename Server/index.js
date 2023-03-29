@@ -1,26 +1,21 @@
 import express from "express";
 import { connectDb } from "./config/connectDb.js";
 import AuthRoute from "./routes/auth.js";
-import BlogRoute from "./routes/blog.js";
+import UserRoute from "./routes/user.js";
 import cors from "cors";
+import VerifyToken from "./middlewares/authMiddleware.js";
 
 const app = express();
 connectDb();
 
 // Configurations
-const Port = process.env.PORT || 5000;
+const Port = process.env.PORT || 5500;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    status: true,
-    msg: "Hello wellcome to patilajit.com",
-  });
-});
-app.use("/auth", AuthRoute);
-app.use("/blog", BlogRoute);
+app.use("/api/auth", AuthRoute);
+app.use("/api",VerifyToken,UserRoute)
 
 app.all("*", (req, res) => {
   res.status(404).json({
