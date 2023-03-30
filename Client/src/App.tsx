@@ -1,24 +1,27 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/SignUp";
+import { useAppSelector } from "./redux/hooks";
 
 function App() {
-  const [user, setUser] = useState(true);
+  const { userDetails } = useAppSelector((state) => state.user);
 
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route index element={user ? <Home /> : <Navigate to={"/login"} />} />
+          <Route
+            index
+            element={userDetails ? <Home /> : <Navigate to={"/login"} />}
+          />
           <Route
             path="login"
-            element={!user ? <Login /> : <Navigate to={"/"} />}
+            element={!userDetails ? <Login /> : <Navigate to={"/"} />}
           />
           <Route
             path="signup"
-            element={!user ? <Signup /> : <Navigate to={"/"} />}
+            element={!userDetails ? <Signup /> : <Navigate to={"/"} />}
           />
         </Routes>
       </BrowserRouter>

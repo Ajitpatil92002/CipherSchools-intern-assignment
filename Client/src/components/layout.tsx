@@ -1,10 +1,20 @@
 import Sidebar from "../components/Sidebar/Sidebar";
-import { FiChevronsRight } from "react-icons/fi";
 import { BiMenuAltRight, BiSearch } from "react-icons/bi";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { logout } from "../redux/features/userSlice";
+import { Link } from "react-router-dom";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [showSidebar, onSetShowSidebar] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const { userDetails } = useAppSelector((state) => state.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <div className="flex">
@@ -43,12 +53,34 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <BiMenuAltRight className="block sm:hidden" size={50} />
               </span>
             </div>
-            <button
-              type="button"
-              className="px-6 py-2 mx-4 hidden sm:block font-semibold rounded bg-gray-100 text-gray-800"
-            >
-              Logout
-            </button>
+            {userDetails ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-6 py-1 mx-4 hidden sm:block font-semibold rounded bg-brand-color text-white"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link to={"/login"}>
+                  <button
+                    type="button"
+                    className="px-6 py-1 mx-4 hidden sm:block font-semibold rounded bg-brand-color text-white"
+                  >
+                    login
+                  </button>
+                </Link>
+                <Link to={"signup"}>
+                  <button
+                    type="button"
+                    className="px-6 py-1 mx-4 hidden sm:block font-semibold rounded bg-brand-color text-white"
+                  >
+                    signup
+                  </button>
+                </Link>
+              </>
+            )}
             <div className="w-full sm:w-56 sm:mt-0 relative">
               <BiSearch className="w-5 h-5 search-icon left-3 absolute" />
               <input

@@ -9,6 +9,7 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  PersistConfig,
 } from "redux-persist";
 import { combineReducers } from "redux";
 
@@ -16,12 +17,15 @@ const reducers = combineReducers({
   user: userSlice.reducer,
 });
 
-const persistConfig = {
+const persistConfig: PersistConfig<RootState> = {
   key: "root",
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, reducers);
+const persistedReducer = persistReducer(
+  persistConfig,
+  reducers
+) as unknown as typeof reducers;
 
 const store = configureStore({
   reducer: persistedReducer,
@@ -35,3 +39,6 @@ const store = configureStore({
 });
 
 export default store;
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

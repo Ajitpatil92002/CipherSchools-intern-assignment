@@ -1,17 +1,47 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { login } from "../../redux/features/userSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+
 export default function Login() {
+  const [user, setuser] = useState({
+    email: "",
+    password: "",
+  });
+
+  const dispatch = useAppDispatch();
+
+  const { isloading, error, iserror } = useAppSelector((state) => state.user);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(login(user));
+
+    if (iserror) {
+      alert(`${error}`);
+    }
+    setuser({ email: "", password: "" });
+  };
+
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl ">
       <h1 className="text-2xl font-bold text-center">Login</h1>
-      <form action="" className="space-y-6 ng-untouched ng-pristine ng-valid">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 ng-untouched ng-pristine ng-valid"
+      >
         <div className="space-y-1 text-sm">
-          <label htmlFor="username" className="block text-paragraph">
-            Username
+          <label htmlFor="email" className="block text-paragraph">
+            email
           </label>
           <input
             type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
+            name="email"
+            id="email"
+            onChange={(e) => {
+              setuser({ ...user, email: e.target.value });
+            }}
+            placeholder="email"
             className="w-full px-4 py-3 rounded-md bg-background text-paragraph outline-none"
           />
         </div>
@@ -23,6 +53,9 @@ export default function Login() {
             type="password"
             name="password"
             id="password"
+            onChange={(e) => {
+              setuser({ ...user, password: e.target.value });
+            }}
             placeholder="Password"
             className="w-full px-4 py-3 rounded-md bg-background text-paragraph outline-none"
           />
@@ -32,8 +65,11 @@ export default function Login() {
             </a>
           </div>
         </div>
-        <button className="block w-full p-3 text-center bg-brand-color text-white rounded-md">
-          Sign in
+        <button
+          disabled={isloading}
+          className="block w-full p-3 text-center bg-brand-color text-white rounded-md disabled:cursor-not-allowed"
+        >
+          Login
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">
@@ -74,13 +110,13 @@ export default function Login() {
       </div>
       <p className="text-xs text-center sm:px-6 text-paragraph">
         Don't have an account?
-        <a
+        <Link
           rel="noopener noreferrer"
-          href="#"
+          to={"/signup"}
           className="underline dark:text-gray-100"
         >
           Sign up
-        </a>
+        </Link>
       </p>
     </div>
   );
