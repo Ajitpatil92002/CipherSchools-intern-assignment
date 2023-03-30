@@ -71,7 +71,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     login
                   </button>
                 </Link>
-                <Link to={"signup"}>
+                <Link to={"/signup"}>
                   <button
                     type="button"
                     className="px-6 py-1 mx-4 hidden sm:block font-semibold rounded bg-brand-color text-white"

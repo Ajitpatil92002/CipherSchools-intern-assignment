@@ -1,17 +1,39 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+type webLinks = {
+  fb?: string;
+  instagram: string;
+  github: string;
+  website: string;
+};
+
+type professionalInfoType = {
+  highestEducation?: string;
+  currentOccupation?: string;
+};
+
+type userDetailsType = {
+  _id?: string | number;
+  name?: string;
+  email?: string;
+  about?: string;
+  weblinks?: webLinks;
+  professionalInfo?: professionalInfoType;
+  interests?: string[];
+};
+
 type StateType = {
-  isloading?: boolean;
-  userDetails?: {} | boolean;
-  iserror?: boolean;
-  error?: string | undefined;
-  token?: string | null;
+  isloading: boolean;
+  userDetails: userDetailsType | null;
+  iserror: boolean;
+  error: string | undefined;
+  token: string | null;
 };
 
 const initialState: StateType = {
   isloading: false,
-  userDetails: false,
+  userDetails: null,
   iserror: false,
   error: "",
   token: null,
@@ -64,7 +86,7 @@ export const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.isloading = false;
-      state.userDetails = false;
+      state.userDetails = null;
       state.iserror = false;
       state.error = "";
       state.token = null;
@@ -88,7 +110,7 @@ export const userSlice = createSlice({
       state.isloading = false;
       state.iserror = true;
       state.error = action.error.message;
-      state.userDetails = false;
+      state.userDetails = null;
       state.token = null;
     });
     builder.addCase(Signup.pending, (state) => {
@@ -97,7 +119,7 @@ export const userSlice = createSlice({
     builder.addCase(
       Signup.fulfilled,
       (state, action: PayloadAction<StateType>) => {
-        state.userDetails = action.payload;
+        state.userDetails = action.payload.userDetails;
         state.isloading = false;
         state.token = action.payload.token;
         state.iserror = false;
@@ -108,7 +130,7 @@ export const userSlice = createSlice({
       state.isloading = false;
       state.iserror = true;
       state.error = action.error.message;
-      state.userDetails = false;
+      state.userDetails = null;
       state.token = null;
     });
     builder.addCase(userUpdate.pending, (state) => {
@@ -116,7 +138,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(
       userUpdate.fulfilled,
-      (state, action: PayloadAction<StateType>) => {
+      (state, action: PayloadAction<userDetailsType>) => {
         state.userDetails = action.payload;
         state.isloading = false;
         state.iserror = false;
@@ -127,7 +149,7 @@ export const userSlice = createSlice({
       state.isloading = false;
       state.iserror = true;
       state.error = action.error.message;
-      state.userDetails = false;
+      state.userDetails = null;
     });
   },
 });

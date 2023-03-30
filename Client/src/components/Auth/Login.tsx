@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { login } from "../../redux/features/userSlice";
+import { login, logout } from "../../redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 export default function Login() {
@@ -13,14 +13,17 @@ export default function Login() {
 
   const { isloading, error, iserror } = useAppSelector((state) => state.user);
 
+  useEffect(() => {
+    if (iserror) {
+      alert(`${error}`);
+      //reset the state
+      dispatch(logout());
+    }
+  }, [isloading, error, iserror]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(login(user));
-
-    if (iserror) {
-      alert(`${error}`);
-    }
-    setuser({ email: "", password: "" });
   };
 
   return (
@@ -38,6 +41,7 @@ export default function Login() {
             type="text"
             name="email"
             id="email"
+            value={user.email}
             onChange={(e) => {
               setuser({ ...user, email: e.target.value });
             }}
@@ -52,6 +56,7 @@ export default function Login() {
           <input
             type="password"
             name="password"
+            value={user.password}
             id="password"
             onChange={(e) => {
               setuser({ ...user, password: e.target.value });
@@ -67,9 +72,9 @@ export default function Login() {
         </div>
         <button
           disabled={isloading}
-          className="block w-full p-3 text-center bg-brand-color text-white rounded-md disabled:cursor-not-allowed"
+          className="block w-full p-3 text-center bg-brand-color text-white rounded-md disabled:cursor-not-allowed disabled:opacity-80"
         >
-          Login
+          Login {isloading && "loading ...."}
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">

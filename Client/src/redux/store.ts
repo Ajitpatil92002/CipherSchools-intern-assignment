@@ -20,6 +20,7 @@ const reducers = combineReducers({
 const persistConfig: PersistConfig<RootState> = {
   key: "root",
   storage,
+  version: 1,
 };
 
 const persistedReducer = persistReducer(

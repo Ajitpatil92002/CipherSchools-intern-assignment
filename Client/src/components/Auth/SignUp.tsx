@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Signup } from "../../redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
@@ -13,17 +13,15 @@ export default function SignUp() {
 
   const { isloading, error, iserror } = useAppSelector((state) => state.user);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(Signup({ ...user }));
+  useEffect(() => {
     if (iserror) {
       alert(`${error}`);
     }
-    setuser({
-      name: "",
-      email: "",
-      password: "",
-    });
+  }, [isloading, error, iserror]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await dispatch(Signup({ ...user }));
   };
 
   return (
@@ -42,6 +40,7 @@ export default function SignUp() {
             name="username"
             id="username"
             placeholder="Username"
+            value={user.name}
             onChange={(e) => {
               setuser({ ...user, name: e.target.value });
             }}
@@ -57,6 +56,7 @@ export default function SignUp() {
             name="email"
             id="email"
             placeholder="email"
+            value={user.email}
             onChange={(e) => {
               setuser({ ...user, email: e.target.value });
             }}
@@ -71,6 +71,7 @@ export default function SignUp() {
             type="password"
             name="password"
             id="password"
+            value={user.password}
             placeholder="Password"
             onChange={(e) => {
               setuser({ ...user, password: e.target.value });
@@ -80,9 +81,9 @@ export default function SignUp() {
         </div>
         <button
           disabled={isloading}
-          className="block w-full p-3 text-center bg-brand-color text-white rounded-md disabled:cursor-not-allowed"
+          className="block w-full p-3 text-center bg-brand-color text-white rounded-md disabled:cursor-not-allowed disabled:opacity-80"
         >
-          Sign in
+          Signup {isloading && "loading ...."}
         </button>
       </form>
     </div>
