@@ -1,33 +1,17 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-type webLinks = {
-  fb?: string;
-  instagram: string;
-  github: string;
-  website: string;
-};
-
-type professionalInfoType = {
-  highestEducation?: string;
-  currentOccupation?: string;
-};
-
 type userDetailsType = {
-  _id?: string | number;
-  name?: string;
-  email?: string;
-  about?: string;
-  weblinks?: webLinks;
-  professionalInfo?: professionalInfoType;
-  interests?: string[];
+  _id: string | number;
+  name: string;
+  email: string;
 };
 
 type StateType = {
   isloading: boolean;
   userDetails: userDetailsType | null;
   iserror: boolean;
-  error: string | undefined;
+  error: string | null;
   token: string | null;
 };
 
@@ -66,17 +50,7 @@ export const Signup = createAsyncThunk(
       email,
       password,
     });
-    return response.data;
-  }
-);
-
-export const userUpdate = createAsyncThunk(
-  "user/userUpdate",
-  async ({ _id, ...usersDetails }: any) => {
-    const response = await axios.put(`http://localhost:5500/api/users/${_id}`, {
-      ...usersDetails,
-    });
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -109,7 +83,7 @@ export const userSlice = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.isloading = false;
       state.iserror = true;
-      state.error = action.error.message;
+      state.error = action.error.message || "something error";
       state.userDetails = null;
       state.token = null;
     });
@@ -129,27 +103,9 @@ export const userSlice = createSlice({
     builder.addCase(Signup.rejected, (state, action) => {
       state.isloading = false;
       state.iserror = true;
-      state.error = action.error.message;
+      state.error = action.error.message || "something error";
       state.userDetails = null;
       state.token = null;
-    });
-    builder.addCase(userUpdate.pending, (state) => {
-      state.isloading = true;
-    });
-    builder.addCase(
-      userUpdate.fulfilled,
-      (state, action: PayloadAction<userDetailsType>) => {
-        state.userDetails = action.payload;
-        state.isloading = false;
-        state.iserror = false;
-        state.error = "";
-      }
-    );
-    builder.addCase(userUpdate.rejected, (state, action) => {
-      state.isloading = false;
-      state.iserror = true;
-      state.error = action.error.message;
-      state.userDetails = null;
     });
   },
 });

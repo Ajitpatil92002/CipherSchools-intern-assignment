@@ -2,6 +2,8 @@ import UserModel from "../models/User.js";
 import { validationResult } from "express-validator";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
 dotenv.config();
 
 export const signupController = async (req, res) => {
@@ -14,7 +16,7 @@ export const signupController = async (req, res) => {
         errors: errors.array(),
       });
     }
-    const { name, email, password } = req.body;
+    let { name, email, password } = req.body;
     const UserFound = await UserModel.findOne({ email });
     if (UserFound) {
       res.status(401).json({
@@ -23,6 +25,9 @@ export const signupController = async (req, res) => {
         data: {},
       });
     } else {
+      const salt = await bcrypt.genSalt(10);
+      password = await bcrypt.hash(password, salt);
+
       const newUser = await UserModel.create({ name, email, password });
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       res.json({
@@ -31,6 +36,7 @@ export const signupController = async (req, res) => {
         data: {
           token,
           userDetails: {
+            _id: newUser._id,
             name: newUser.name,
             email: newUser.email,
           },
@@ -53,14 +59,13 @@ export const loginController = async (req, res) => {
     const User = await UserModel.login(email, password);
     const token = jwt.sign({ id: User._id }, process.env.JWT_SECRET);
 
-    console.log(req.body);
-
     res.json({
       status: "Success",
       msg: "Login Successfully",
       data: {
         token,
         userDetails: {
+          _id: User._id,
           name: User.name,
           email: User.email,
         },

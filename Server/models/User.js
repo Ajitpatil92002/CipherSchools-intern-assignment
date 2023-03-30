@@ -5,29 +5,24 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  about: { type: String},
+  about: { type: String, default: "" },
   webLinks: {
-    fb: { type: String },
-    instagram: { type: String },
-    github: { type: String },
-    website: { type: String },
+    facebook: { type: String, default: "" },
+    instagram: { type: String, default: "" },
+    github: { type: String, default: "" },
+    website: { type: String, default: "" },
+    twitter: { type: String, default: "" },
+    linkedIn: { type: String, default: "" },
   },
   professionalInfo: {
-    highestEducation: { type: String },
-    currentOccupation: { type: String },
+    highestEducation: { type: String, default: "" },
+    currentOccupation: { type: String, default: "" },
   },
   interests: [{ type: String }],
 });
 
-UserSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
 UserSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
-  console.log(user);
   if (user) {
     const found = await bcrypt.compare(password, user.password);
     if (found) {

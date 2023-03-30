@@ -17,8 +17,10 @@ export default function ProfileDetails() {
           <div className="profile-content flex flex-1 justify-between items-center text-text-color2">
             <div className="user-details">
               <h2 className="text-xl">Hello,</h2>
-              <h1 className="text-xl font-semibold">{userDetails.name}</h1>
-              <h2 className="text-xl">{userDetails.email}</h2>
+              <h1 className="text-xl font-semibold">
+                {userDetails && userDetails.name}
+              </h1>
+              <h2 className="text-xl">{userDetails && userDetails.email}</h2>
             </div>
             <div className="user-followers hidden xl:block">
               <h2 className="text-xl">0 followers</h2>

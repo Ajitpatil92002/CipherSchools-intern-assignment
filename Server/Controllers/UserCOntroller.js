@@ -10,7 +10,7 @@ export const get_user = async (req, res) => {
         email: user.email,
         interests: user.interests,
         webLinks: user.webLinks,
-        webLinks: user.professionalInfo,
+        professionalInfo: user.professionalInfo,
         about: user.about,
       });
     } else {
@@ -31,14 +31,17 @@ export const update_user = async (req, res) => {
       user.professionalInfo =
         req.body.professionalInfo || user.professionalInfo;
       user.interests = req.body.interests || user.interests;
+
       const updatedUser = await user.save();
       res.status(200).json({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        interests: updatedUser.interests,
+        interests: updatedUser.interests.filter(
+          (value, index, array) => array.indexOf(value) === index
+        ),
         webLinks: updatedUser.webLinks,
-        webLinks: updatedUser.professionalInfo,
+        professionalInfo: updatedUser.professionalInfo,
         about: updatedUser.about,
       });
     } else {

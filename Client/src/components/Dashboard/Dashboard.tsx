@@ -4,7 +4,7 @@ const Dashboard = () => {
   return (
     <>
       <section className="w-full">
-        <Profile/>
+        <Profile />
       </section>
     </>
   );

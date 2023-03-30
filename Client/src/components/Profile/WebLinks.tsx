@@ -1,3 +1,4 @@
+import { useContext, useState } from "react";
 import {
   AiFillFacebook,
   AiFillGithub,
@@ -6,20 +7,65 @@ import {
   AiFillTwitterCircle,
 } from "react-icons/ai";
 import { BsGlobe, BsPencilFill } from "react-icons/bs";
+import { UserContext } from "../../context/userContext";
+import { useAppSelector } from "../../redux/hooks";
+import USER from "../../api";
 
 export default function WebLinks() {
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  const userContext = useContext(UserContext);
+
+  const { token, userDetails } = useAppSelector((state) => state.user);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    userContext?.dispatch({
+      type: "SET_WEBLINK",
+      payload: { key: name, value },
+    });
+  };
+
+  const handleEdit = async () => {
+    if (userDetails) {
+      try {
+        const resp = await USER.edit(token, userDetails?._id, {
+          webLinks: { ...userContext?.user?.webLinks },
+        });
+        const data = resp.data;
+        userContext?.dispatch({ type: "SET_STATE", payload: { ...data } });
+        setIsEdit(!isEdit);
+      } catch (error) {
+        console.log(error);
+        alert("error");
+      }
+    }
+  };
+
   return (
     <div className="web-links-conatiner m-4 flex justify-center  flex-col">
       <div className="web-links-top flex justify-between items-center p-4">
         <h3 className="text-text-color2 text-xl font-bold">Web Links</h3>
-        <button className="px-8 py-1  bg-brand-color text-white rounded-md hover:bg-opacity-90">
-          Edit
-        </button>
+        {!isEdit ? (
+          <button
+            onClick={() => setIsEdit(true)}
+            className="px-8 py-1  bg-brand-color text-white rounded-md hover:bg-opacity-90"
+          >
+            Edit
+          </button>
+        ) : (
+          <button
+            onClick={handleEdit}
+            className="px-8 py-1  bg-brand-color text-white rounded-md hover:bg-opacity-90 disabled:cursor-not-allowed disabled:opacity-80"
+          >
+            save
+          </button>
+        )}
       </div>
       <div>
         <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3 px-4">
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="LinkedIn" className="text-base text-white">
+            <label htmlFor="ninkedIn" className="text-base text-white">
               LinkedIn
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -33,8 +79,11 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="LinkedIn"
-                placeholder="LinkedIn"
+                name="linkedIn"
+                placeholder="linkedIn"
+                value={userContext?.user?.webLinks.linkedIn ?? ""}
+                onChange={handleChange}
+                disabled={!isEdit}
                 className=" w-full rounded-md outline-none bg-background"
               />
               <span>
@@ -48,7 +97,7 @@ export default function WebLinks() {
             </div>
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="Github" className="text-base text-white">
+            <label htmlFor="github" className="text-base text-white">
               Github
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -62,8 +111,11 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="Github"
-                placeholder="Github"
+                name="github"
+                placeholder="github"
+                onChange={handleChange}
+                value={userContext?.user?.webLinks.github ?? ""}
+                disabled={!isEdit}
                 className=" w-full rounded-md outline-none bg-background"
               />
               <span>
@@ -77,7 +129,7 @@ export default function WebLinks() {
             </div>
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="Facebook" className="text-base text-white">
+            <label htmlFor="facebook" className="text-base text-white">
               Facebook
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -91,8 +143,11 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="Facebook"
-                placeholder="Facebook"
+                name="facebook"
+                placeholder="facebook"
+                onChange={handleChange}
+                value={userContext?.user?.webLinks.facebook ?? ""}
+                disabled={!isEdit}
                 className=" w-full rounded-md outline-none bg-background"
               />
               <span>
@@ -106,7 +161,7 @@ export default function WebLinks() {
             </div>
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="Twitter" className="text-base text-white">
+            <label htmlFor="twitter" className="text-base text-white">
               Twitter
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -120,8 +175,11 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="Twitter"
-                placeholder="Twitter"
+                name="twitter"
+                placeholder="twitter"
+                onChange={handleChange}
+                value={userContext?.user?.webLinks.twitter ?? ""}
+                disabled={!isEdit}
                 className=" w-full rounded-md outline-none bg-background"
               />
               <span>
@@ -135,7 +193,7 @@ export default function WebLinks() {
             </div>
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="Instagram" className="text-base text-white">
+            <label htmlFor="instagram" className="text-base text-white">
               Instagram
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -149,7 +207,10 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="Instagram"
+                name="instagram"
+                onChange={handleChange}
+                value={userContext?.user?.webLinks.instagram ?? ""}
+                disabled={!isEdit}
                 placeholder="Instagram"
                 className=" w-full rounded-md outline-none bg-background"
               />
@@ -164,7 +225,7 @@ export default function WebLinks() {
             </div>
           </div>
           <div className="col-span-full sm:col-span-3">
-            <label htmlFor="Website" className="text-base text-white">
+            <label htmlFor="website" className="text-base text-white">
               Website
             </label>
             <div className="bg-background text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
@@ -178,7 +239,10 @@ export default function WebLinks() {
               </span>
               <input
                 type="text"
-                name="Website"
+                name="website"
+                onChange={handleChange}
+                value={userContext?.user?.webLinks.website ?? ""}
+                disabled={!isEdit}
                 placeholder="Website"
                 className=" w-full rounded-md outline-none bg-background"
               />

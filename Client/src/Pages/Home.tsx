@@ -1,11 +1,14 @@
-import React from "react";
 import Dashboard from "../components/Dashboard/Dashboard";
 import Layout from "../components/layout";
+import UserContextProvider from "../context/userContext";
 
 export default function Home() {
+  
   return (
-    <Layout>
-      <Dashboard />
-    </Layout>
+    <UserContextProvider>
+      <Layout>
+        <Dashboard />
+      </Layout>
+    </UserContextProvider>
   );
 }
