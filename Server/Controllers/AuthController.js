@@ -30,7 +30,10 @@ export const signupController = async (req, res) => {
         msg: "register Successfully",
         data: {
           token,
-          userDetails: newUser,
+          userDetails: {
+            name: newUser.name,
+            email: newUser.email,
+          },
         },
       });
     }
@@ -50,12 +53,17 @@ export const loginController = async (req, res) => {
     const User = await UserModel.login(email, password);
     const token = jwt.sign({ id: User._id }, process.env.JWT_SECRET);
 
+    console.log(req.body);
+
     res.json({
       status: "Success",
       msg: "Login Successfully",
       data: {
         token,
-        userDetails: User,
+        userDetails: {
+          name: User.name,
+          email: User.email,
+        },
       },
     });
   } catch (err) {

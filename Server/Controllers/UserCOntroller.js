@@ -1,11 +1,18 @@
 import UserModel from "../models/User.js";
 
-
 export const get_user = async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.id);
     if (user) {
-      res.status(200).json(user);
+      res.status(200).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        interests: user.interests,
+        webLinks: user.webLinks,
+        webLinks: user.professionalInfo,
+        about: user.about,
+      });
     } else {
       res.status(404).json({ message: "User not found" });
     }
@@ -25,7 +32,15 @@ export const update_user = async (req, res) => {
         req.body.professionalInfo || user.professionalInfo;
       user.interests = req.body.interests || user.interests;
       const updatedUser = await user.save();
-      res.status(200).json(updatedUser);
+      res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        interests: updatedUser.interests,
+        webLinks: updatedUser.webLinks,
+        webLinks: updatedUser.professionalInfo,
+        about: updatedUser.about,
+      });
     } else {
       res.status(404).json({ message: "User not found" });
     }
