@@ -6,6 +6,7 @@ type StateType = {
   userDetails: {}[];
   iserror: boolean;
   error: string | undefined;
+  token: string | null;
 };
 
 const initialState: StateType = {
@@ -13,6 +14,7 @@ const initialState: StateType = {
   userDetails: [],
   iserror: false,
   error: "",
+  token: null,
 };
 
 export const login = createAsyncThunk(
@@ -22,7 +24,7 @@ export const login = createAsyncThunk(
       email,
       password,
     });
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -43,6 +45,7 @@ export const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.userDetails = [];
+      state.token = null;
     },
   },
   extraReducers: (builder) => {
@@ -50,7 +53,8 @@ export const userSlice = createSlice({
       state.isloading = true;
     });
     builder.addCase(login.fulfilled, (state, action) => {
-      state.userDetails = action.payload;
+      state.userDetails = action.payload.userDetails;
+      state.token = action.payload.token;
       state.isloading = false;
       state.iserror = false;
       state.error = "";
@@ -60,6 +64,7 @@ export const userSlice = createSlice({
       state.iserror = true;
       state.error = action.error.message;
       state.userDetails = [];
+      state.token = null;
     });
     builder.addCase(Signup.pending, (state) => {
       state.isloading = true;
@@ -67,6 +72,7 @@ export const userSlice = createSlice({
     builder.addCase(Signup.fulfilled, (state, action) => {
       state.userDetails = action.payload;
       state.isloading = false;
+      state.token = action.payload.token;
       state.iserror = false;
       state.error = "";
     });
@@ -75,6 +81,7 @@ export const userSlice = createSlice({
       state.iserror = true;
       state.error = action.error.message;
       state.userDetails = [];
+      state.token = null;
     });
   },
 });
