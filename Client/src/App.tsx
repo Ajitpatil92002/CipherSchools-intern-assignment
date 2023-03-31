@@ -6,6 +6,8 @@ import { useAppSelector } from "./redux/hooks";
 
 function App() {
   const { userDetails } = useAppSelector((state) => state.user);
+  console.log(import.meta.env.VITE_API_URL);
+  
 
   return (
     <>

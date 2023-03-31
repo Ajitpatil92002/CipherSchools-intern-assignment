@@ -26,10 +26,13 @@ const initialState: StateType = {
 export const login = createAsyncThunk(
   "user/login",
   async ({ email, password }: { email: string; password: string }) => {
-    const response = await axios.post("http://localhost:5500/api/auth/login", {
-      email,
-      password,
-    });
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/auth/login`,
+      {
+        email,
+        password,
+      }
+    );
     return response.data.data;
   }
 );
@@ -45,11 +48,14 @@ export const Signup = createAsyncThunk(
     email: string;
     password: string;
   }) => {
-    const response = await axios.post("http://localhost:5500/api/auth/signup", {
-      name,
-      email,
-      password,
-    });
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/auth/signup`,
+      {
+        name,
+        email,
+        password,
+      }
+    );
     return response.data.data;
   }
 );
