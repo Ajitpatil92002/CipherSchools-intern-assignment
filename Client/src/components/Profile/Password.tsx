@@ -101,8 +101,8 @@ export default function Password() {
                 </div>
               </div>
               <div className="col-span-full ">
-                <label htmlFor="email" className="text-base text-white">
-                  Email
+                <label htmlFor="newpassword" className="text-base text-white">
+                  new Password
                 </label>
                 <div className="bg-second-white text-paragraph p-2 px-4 mt-4 rounded-md flex items-center justify-start space-x-1">
                   <input
