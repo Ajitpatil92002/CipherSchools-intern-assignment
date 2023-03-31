@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 export default function Login() {
   const [user, setuser] = useState({
-    email: "",
-    password: "",
+    email: "ajit@gmail.com",
+    password: "ajit123",
   });
 
   const dispatch = useAppDispatch();
