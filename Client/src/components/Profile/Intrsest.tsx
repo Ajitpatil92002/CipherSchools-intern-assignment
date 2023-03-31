@@ -3,6 +3,7 @@ import { UserContext } from "../../context/userContext";
 import { useAppSelector } from "../../redux/hooks";
 import USER from "../../api";
 import Model from "../Model";
+import toastify from "../../utils";
 
 export default function Intrsest() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -27,9 +28,10 @@ export default function Intrsest() {
         const data = resp.data;
         userContext?.dispatch({ type: "SET_STATE", payload: { ...data } });
         setIsEdit(!isEdit);
+        toastify.success("Updated");
       } catch (error) {
         console.log(error);
-        alert("error");
+        toastify.success("not Updated someting error");
       }
     }
   };

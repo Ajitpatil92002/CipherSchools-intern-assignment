@@ -2,12 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext";
 import USER from "../../api";
 import { useAppSelector } from "../../redux/hooks";
+import toastify from "../../utils";
 
 export default function AboutMe() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const userContext = useContext(UserContext);
-  
+
   const { token, userDetails } = useAppSelector((state) => state.user);
 
   const handleEditAbout = async () => {
@@ -18,9 +19,11 @@ export default function AboutMe() {
         });
         const data = resp.data;
         userContext?.dispatch({ type: "SET_STATE", payload: { ...data } });
+        toastify.success("About ME Updated");
+        setIsEdit(!isEdit);
       } catch (error) {
         console.log(error);
-        alert("error");
+        toastify.error("About ME not Updated");
       }
     }
   };

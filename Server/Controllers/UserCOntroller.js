@@ -1,4 +1,5 @@
 import UserModel from "../models/User.js";
+import bcrypt from "bcryptjs";
 
 export const get_user = async (req, res) => {
   try {
@@ -63,5 +64,39 @@ export const delete_user = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const PasswordResetController = async (req, res) => {
+  try {
+    let { newpassword, password, email } = req.body;
+
+    await UserModel.login(email, password);
+
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(newpassword, salt);
+
+    const newUser = await UserModel.findByIdAndUpdate(req.params.id, {
+      $set: { password },
+    });
+
+    res.status(200).json({
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      interests: newUser.interests.filter(
+        (value, index, array) => array.indexOf(value) === index
+      ),
+      webLinks: newUser.webLinks,
+      professionalInfo: newUser.professionalInfo,
+      about: newUser.about,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({
+      status: "error",
+      msg: err.message,
+      data: { err },
+    });
   }
 };

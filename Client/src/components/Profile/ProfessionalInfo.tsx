@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../context/userContext";
 import { useAppSelector } from "../../redux/hooks";
 import USER from "../../api";
+import toastify from "../../utils";
 
 export default function ProfessionalInfo() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -27,9 +28,10 @@ export default function ProfessionalInfo() {
         const data = resp.data;
         userContext?.dispatch({ type: "SET_STATE", payload: { ...data } });
         setIsEdit(!isEdit);
+        toastify.success("WebLinks Updated");
       } catch (error) {
         console.log(error);
-        alert("error");
+        toastify.error("WebLinks not Updated");
       }
     }
   };

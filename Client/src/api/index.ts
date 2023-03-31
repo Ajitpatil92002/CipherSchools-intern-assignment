@@ -23,6 +23,16 @@ class USER {
     };
     return api.put(url, { ...data }, config);
   }
+
+  resetPassword(token: string | null, _id: string | number, data: any) {
+    const url = `/restpassword/${_id}`;
+    const config = {
+      headers: {
+        authtoken: `${token}`,
+      },
+    };
+    return api.put(url, { ...data }, config);
+  }
 }
 
 export default new USER();

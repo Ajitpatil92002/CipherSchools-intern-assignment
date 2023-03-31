@@ -7,8 +7,10 @@ import {
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from "react-icons/ai";
-import { FiAlertTriangle, FiSettings } from "react-icons/fi";
 import MenuItem from "./MenuItem";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { logout } from "../../redux/features/userSlice";
+import { Link } from "react-router-dom";
 
 const sidebarItems = [
   [
@@ -48,22 +50,6 @@ const sidebarItems = [
       href: "/",
     },
   ],
-  [
-    {
-      id: "5",
-      title: "Reports",
-      notifications: false,
-      Icon: FiAlertTriangle,
-      href: "/",
-    },
-    {
-      id: "6",
-      title: "Settings",
-      notifications: false,
-      Icon: FiSettings,
-      href: "/",
-    },
-  ],
 ];
 
 type SidebarProps = {
@@ -73,6 +59,14 @@ type SidebarProps = {
 
 function Sidebar({ onSidebarHide, showSidebar }: SidebarProps) {
   const [selected, setSelected] = useState("0");
+
+  const dispatch = useAppDispatch();
+
+  const { userDetails } = useAppSelector((state) => state.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <div
@@ -103,36 +97,40 @@ function Sidebar({ onSidebarHide, showSidebar }: SidebarProps) {
             selected={selected}
           />
         ))}
-        <div className="mt-8 mb-0 font-bold px-3 block sm:hidden xl:block ">
-          SHORTCUTS
-        </div>
-        {sidebarItems[1].map((i) => (
-          <MenuItem
-            key={i.id}
-            item={i}
-            onClick={setSelected}
-            selected={selected}
-          />
-        ))}
         <div className="flex-grow" />
       </div>
 
       <div className="flex-shrink-0 overflow-hidden p-2">
-        <div className="flex items-center h-full sm:justify-center xl:justify-start p-2 sidebar-separator-bottom">
-          <img
-            src="https://assets.codepen.io/3685267/mock_faces_8.jpg"
-            alt=""
-            className="w-10 h-10 rounded-full"
-          />
-          <div className="block sm:hidden xl:block ml-2 font-bold ">Admin</div>
-          <div className="flex-grow block sm:hidden xl:block" />
+        <div className="flex flex-col items-center h-full sm:justify-center xl:justify-start p-2 sidebar-separator-bottom">
           {/* <FiMoreVertical className="block sm:hidden xl:block w-3 h-3" /> */}
-          <button
-            type="button"
-            className="px-2 py-2 mx-2 sm:hidden font-semibold rounded bg-gray-100 text-gray-800"
-          >
-            Logout
-          </button>
+          {userDetails ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="px-6 py-1 mx-4  font-semibold rounded bg-brand-color text-white md:hidden"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link to={"/login"} className="m-2 md:hidden">
+                <button
+                  type="button"
+                  className="px-6 py-1 mx-4  font-semibold rounded bg-brand-color text-white"
+                >
+                  login
+                </button>
+              </Link>
+              <Link to={"/signup"} className="m-1 md:hidden">
+                <button
+                  type="button"
+                  className="px-6 py-1 mx-4  font-semibold rounded bg-brand-color text-white"
+                >
+                  signup
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

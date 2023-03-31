@@ -3,6 +3,7 @@ import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/SignUp";
 import { useAppSelector } from "./redux/hooks";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const { userDetails } = useAppSelector((state) => state.user);
